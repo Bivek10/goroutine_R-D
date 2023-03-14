@@ -14,6 +14,7 @@ func main() {
 	//helpers.AsyncGreet(wg)
 	//helpers.AsyncGetStatusCode(wg)
 	//helpers.LaunchFunc()
-	helpers.ArraySum(wg, mu)
+	//helpers.ArraySum(wg, mu)
+	helpers.ArraySumFunc1(wg, mu)
 
 }
