@@ -13,8 +13,13 @@ func BasicChannel(wg *sync.WaitGroup) {
 	go func(ch <-chan int) {
 		defer wg.Done()
 
-		for i := range ch {
-			fmt.Println("received value: ", i)
+		for {
+			if i, ok := <-ch; ok {
+				fmt.Println("received value: ", i)
+			} else {
+				fmt.Println("channel closed")
+				break
+			}
 		}
 
 	}(channel)
@@ -25,6 +30,7 @@ func BasicChannel(wg *sync.WaitGroup) {
 		//send 42 to channel
 		for j := 0; j <= 50; j++ {
 			ch <- j
+
 		}
 		close(ch)
 
