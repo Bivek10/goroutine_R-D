@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"sync"
 
 	"example.com/go_routine_example/helpers"
@@ -18,6 +19,7 @@ func main() {
 	//helpers.LaunchFunc()
 	//helpers.ArraySum(wg, mu)
 	//helpers.ArraySumFunc1(wg, mu)
-	helpers.BasicChannel(wg)
-
+	// helpers.BasicChannel(wg)
+	http.HandleFunc("/", helpers.Handler)
+	http.ListenAndServe(":8080", nil)
 }
