@@ -7,14 +7,14 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
+var upgraders = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	conn, err := upgrader.Upgrade(w, r, nil)
+	conn, err := upgraders.Upgrade(w, r, nil)
 
 	if err != nil {
 		fmt.Println("Error upgrading to WebSocket:", err)

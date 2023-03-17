@@ -1,33 +1,39 @@
+
 package main
 
 import (
+	"flag"
+	"log"
 	"net/http"
-	"sync"
 
 	"example.com/go_routine_example/helpers"
 )
 
-var mu = &sync.Mutex{}
-var wg = &sync.WaitGroup{}
+var addr = flag.String("addr", ":8080", "http service address")
 
-func main() {
-
-	//runtime.GOMAXPROCS(500)
-	//fmt.Println("thread running", runtime.GOMAXPROCS(-1))
-	//helpers.AsyncGreet(wg)
-	//helpers.AsyncGetStatusCode(wg)
-	//helpers.LaunchFunc()
-	//helpers.ArraySum(wg, mu)
-	//helpers.ArraySumFunc1(wg, mu)
-	// helpers.BasicChannel(wg)
-	//http.HandleFunc("/ws", helpers.Handler)
-	setupAPI()
-
+func serveHome(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.URL)
+	if r.URL.Path != "/" {
+		http.Error(w, "Not found", http.StatusNotFound)
+		return
+	}
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	http.ServeFile(w, r, "./frontend/index.html")
 }
 
-func setupAPI() {
-	http.Handle("/", http.FileServer(http.Dir("./frontend")))
-	http.HandleFunc("/ws", helpers.NewManager().ServeWS)
-
-	http.ListenAndServe(":8080", nil)
+func main() {
+	flag.Parse()
+	hub := helpers.NewHub()
+	go hub.Run()
+	http.HandleFunc("/", serveHome)
+	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		helpers.ServeWs(hub, w, r)
+	})
+	err := http.ListenAndServe(*addr, nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
 }
