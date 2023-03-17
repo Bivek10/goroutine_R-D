@@ -1,0 +1,3 @@
+Thank you for participation in Quiz APP
+==============================
+{{.Score}}

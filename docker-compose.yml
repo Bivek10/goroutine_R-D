@@ -1,0 +1,45 @@
+version: "3.3"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web.Dockerfile
+    ports:
+      - ${ServerPort}:${ServerPort}
+      - ${DebugPort}:2345
+    volumes:
+      - .:/clean_web
+      - ./clients-image:/files
+    env_file: .env
+    container_name: quiz_web
+    depends_on:
+      - database
+
+  database:
+    build:
+      context: .
+      dockerfile: ./docker/db.Dockerfile
+    environment:
+      MYSQL_USER: ${DBUsername}
+      MYSQL_PASSWORD: ${DBPassword}
+      MYSQL_DATABASE: ${DBName}
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+        "--default-authentication-plugin=mysql_native_password",
+      ]
+    ports:
+      - 33066:3306
+    volumes:
+      - quiz_db:/var/lib/mysql
+    container_name: database
+
+  adminer:
+    image: adminer
+    ports: 
+      - ${AdminerPort}:8080
+
+volumes:
+  quiz_db:
