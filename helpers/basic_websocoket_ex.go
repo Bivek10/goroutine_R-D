@@ -13,13 +13,17 @@ var upgrader = websocket.Upgrader{
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
+
 	conn, err := upgrader.Upgrade(w, r, nil)
+
 	if err != nil {
 		fmt.Println("Error upgrading to WebSocket:", err)
 		return
 	}
 
 	fmt.Println("New WebSocket connection established")
+
+	defer conn.Close()
 
 	for {
 		messageType, message, err := conn.ReadMessage()

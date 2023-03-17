@@ -20,6 +20,14 @@ func main() {
 	//helpers.ArraySum(wg, mu)
 	//helpers.ArraySumFunc1(wg, mu)
 	// helpers.BasicChannel(wg)
-	http.HandleFunc("/", helpers.Handler)
+	//http.HandleFunc("/ws", helpers.Handler)
+	setupAPI()
+
+}
+
+func setupAPI() {
+	http.Handle("/", http.FileServer(http.Dir("./frontend")))
+	http.HandleFunc("/ws", helpers.NewManager().ServeWS)
+
 	http.ListenAndServe(":8080", nil)
 }
