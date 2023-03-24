@@ -1,10 +1,10 @@
-
 package main
 
 import (
 	"flag"
 	"log"
 	"net/http"
+	"sync"
 
 	"example.com/go_routine_example/helpers"
 )
@@ -25,15 +25,18 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	flag.Parse()
-	hub := helpers.NewHub()
-	go hub.Run()
-	http.HandleFunc("/", serveHome)
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		helpers.ServeWs(hub, w, r)
-	})
-	err := http.ListenAndServe(*addr, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
-	}
+
+	// flag.Parse()
+	// hub := helpers.NewHub()
+	// go hub.Run()
+	// http.HandleFunc("/", serveHome)
+	// http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+	// 	helpers.ServeWs(hub, w, r)
+	// })
+	// err := http.ListenAndServe(*addr, nil)
+	// if err != nil {
+	// 	log.Fatal("ListenAndServe: ", err)
+	// }
+
+	helpers.RandomNumber(&sync.WaitGroup{})
 }

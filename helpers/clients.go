@@ -90,7 +90,9 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
+
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+
 			if !ok {
 				// The hub closed the channel.
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
@@ -98,9 +100,11 @@ func (c *Client) writePump() {
 			}
 
 			w, err := c.conn.NextWriter(websocket.TextMessage)
+
 			if err != nil {
 				return
 			}
+
 			w.Write(message)
 
 			// Add queued chat messages to the current websocket message.
@@ -113,6 +117,7 @@ func (c *Client) writePump() {
 			if err := w.Close(); err != nil {
 				return
 			}
+
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
@@ -129,11 +134,15 @@ func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
 	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+
 	client.hub.register <- client
 
 	// Allow collection of memory referenced by the caller by doing all work in
 	// new goroutines.
 	go client.writePump()
+
 	go client.readPump()
+
 }

@@ -12,7 +12,7 @@ each of which generates a random number between 1 and 100 and sends it to a chan
 
 4). Write a program that launches two goroutines. 
 One of the goroutines should generate random numbers between 1 and 100 and send them to a channel.
- The other goroutine should read numbers from the channel and print out whether the number is even or odd.
+ The othesr goroutine should read numbers from the channel and print out whether the number is even or odd.
 
 5). Write a program that launches a goroutine to listen to a channel for incoming strings. 
 Whenever a string is received, the goroutine should print out the string with a timestamp. 
