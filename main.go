@@ -38,5 +38,9 @@ func main() {
 	// 	log.Fatal("ListenAndServe: ", err)
 	// }
 
-	helpers.RandomNumber(&sync.WaitGroup{})
+	ws := &sync.WaitGroup{}
+	ws.Add(2)
+	helpers.WriteMessage(ws)
+	helpers.ReadMessage(ws)
+	ws.Wait()
 }
